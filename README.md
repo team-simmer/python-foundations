@@ -2,7 +2,7 @@
 
 Exercise workbooks for Simmer's [Python Foundations](https://www.teamsimmer.com) course, part of the Complete Python for Data Analysts program.
 
-Open a workbook from its exercise page in the course. In Colab, choose **File → Save a copy in Drive** and work in your copy.
+Open a workbook from its link in the course. In Colab, choose **File → Save a copy in Drive** and work in your copy.
 
 | Lesson | Workbook | Open |
 |--------|----------|------|
