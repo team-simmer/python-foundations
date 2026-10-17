@@ -11,4 +11,17 @@ Open a workbook from its link in the course. In Colab, choose **File → Save a 
 | 8 | Total social referrals by site | [Open in Colab](https://colab.research.google.com/github/team-simmer/python-foundations/blob/main/lesson-08/8.3-site-names.ipynb) |
 | 8 | Build a channel report notebook from scratch | [Open in Colab](https://colab.research.google.com/github/team-simmer/python-foundations/blob/main/lesson-08/8-channel-report.ipynb) |
 
-The workbooks are built from the course's source files. Please don't send pull requests here.
+## Check scripts
+
+Lessons 9 and 10 happen on your own computer. Each exercise ends with a check that you run with uv from its URL, in the exercise's folder. The command is on the topic page. Read a script before you run it: the checks only read your project and run your script, and they don't change anything.
+
+| Lesson | Exercise | Script |
+|--------|----------|--------|
+| 9 | Install uv and Python 3.13 on your computer | [check_python.py](lesson-09/check_python.py) |
+| 9 | Turn your UTM parser into a script | [check_parse_utm.py](lesson-09/check_parse_utm.py) |
+| 9 | Move your referral report into a project | [check_project.py](lesson-09/check_project.py) |
+| 9 | Set up a project from a brief | [check_setup.py](lesson-09/check_setup.py) |
+
+`tests/` and the Lesson checks workflow test the checks on Windows and macOS on every change and every Monday.
+
+The workbooks and checks are built from the course's source files. Please don't send pull requests here.

@@ -1,0 +1,67 @@
+# Published as .github/workflows/lesson-checks.yml in team-simmer/python-foundations.
+# Installs uv the way students do, on Windows and macOS, and runs Lesson 9's exercises and checks end to end
+# with tests/lesson-09/test_checks.py. Each run's summary shows what the terminal printed, for the recording notes.
+name: Lesson checks
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "lesson-09/**"
+      - "tests/**"
+      - ".github/workflows/lesson-checks.yml"
+  schedule:
+    # Every Monday, to notice when a new uv, Python or tldextract changes what students see
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv with the command from Topic 9.1
+        shell: pwsh
+        run: |
+          $before = Get-Command uv -ErrorAction SilentlyContinue
+          $installer = powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex" *>&1 | Out-String
+          $notFound = try { uv --version 2>&1 | Out-String } catch { $_.Exception.Message }
+          # Windows 11's Terminal opens Windows PowerShell 5.1 unless PowerShell 7 is installed, and its message differs.
+          $notFound51 = powershell -NoProfile -Command "uv --version" 2>&1 | Out-String
+          $fence = '```'
+          @(
+            "## Installing uv on Windows", "",
+            "uv on the PATH before installing: $(if ($before) { $before.Source } else { 'no' })", "",
+            "### The installer's output", "", "${fence}text", $installer.Trim(), $fence, "",
+            "### uv --version in the same terminal, before it's reopened (PowerShell 7)", "", "${fence}text", $notFound.Trim(), $fence, "",
+            "### The same in Windows PowerShell 5.1", "", "${fence}text", $notFound51.Trim(), $fence, ""
+          ) -join "`n" | Out-File -Append -Encoding utf8 $env:GITHUB_STEP_SUMMARY
+          "$env:USERPROFILE\.local\bin" | Out-File -Append -Encoding utf8 $env:GITHUB_PATH
+
+      - name: Run Lesson 9's exercises and checks
+        shell: pwsh
+        run: uv run --python 3.13 tests/lesson-09/test_checks.py "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/lesson-09"
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv with the command from Topic 9.1
+        shell: bash
+        run: |
+          before=$(command -v uv || echo no)
+          installer=$(curl -LsSf https://astral.sh/uv/install.sh | sh 2>&1)
+          not_found=$(zsh -c 'uv --version' 2>&1 || true)
+          {
+            echo "## Installing uv on macOS"; echo
+            echo "uv on the PATH before installing: $before"; echo
+            echo "### The installer's output"; echo; echo '```text'; echo "$installer"; echo '```'; echo
+            echo "### uv --version in the same terminal, before it's reopened"; echo; echo '```text'; echo "$not_found"; echo '```'; echo
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Run Lesson 9's exercises and checks
+        shell: bash
+        run: uv run --python 3.13 tests/lesson-09/test_checks.py "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/lesson-09"
