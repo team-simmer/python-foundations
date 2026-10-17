@@ -15,6 +15,8 @@ import sys
 import tomllib
 from pathlib import Path
 
+# The Python version the course pins. Change it here, in every check, in test_checks.py and in lesson-checks.yml.
+PYTHON = "3.13"
 PROJECT = "referral-report"
 EXPECTED = {"pinterest": 507, "instagram": 205, "facebook": 239, "reddit": 153, "linktr": 64}
 
@@ -41,25 +43,25 @@ def check_your_work():
     if project.get("name") == PROJECT:
         results.append((True, f"This is the {PROJECT} project."))
     else:
-        results.append((False, f"This project is called {project.get('name')!r}, not {PROJECT!r}. Create it with uv init --no-package --python 3.13 {PROJECT}, then cd {PROJECT}."))
+        results.append((False, f"This project is called {project.get('name')!r}, not {PROJECT!r}. Create it with uv init --no-package --python {PYTHON} {PROJECT}, then cd {PROJECT}."))
 
     pin = folder / ".python-version"
     pinned = pin.read_text(encoding="utf-8").strip() if pin.is_file() else None
     if pinned is None:
-        results.append((False, "There's no .python-version file. Pin the version with uv python pin 3.13."))
-    elif pinned != "3.13":
-        message = f".python-version says {pinned}, not 3.13. Pin the version with uv python pin 3.13."
-        if not str(project.get("requires-python", "")).startswith(">=3.13"):
-            message += f" If uv says 3.13 is incompatible, the project was created for Python {pinned}: in pyproject.toml, change requires-python to \">=3.13\", or create the project again with uv init --no-package --python 3.13 {PROJECT}."
+        results.append((False, f"There's no .python-version file. Pin the version with uv python pin {PYTHON}."))
+    elif pinned != PYTHON:
+        message = f".python-version says {pinned}, not {PYTHON}. Pin the version with uv python pin {PYTHON}."
+        if not str(project.get("requires-python", "")).startswith(f">={PYTHON}"):
+            message += f" If uv says {PYTHON} is incompatible, the project was created for Python {pinned}: in pyproject.toml, change requires-python to \">={PYTHON}\", or create the project again with uv init --no-package --python {PYTHON} {PROJECT}."
         results.append((False, message))
     else:
-        results.append((True, "The project is pinned to Python 3.13."))
+        results.append((True, f"The project is pinned to Python {PYTHON}."))
 
-    running = (sys.version_info.major, sys.version_info.minor)
-    if running == (3, 13):
+    running = f"{sys.version_info.major}.{sys.version_info.minor}"
+    if running == PYTHON:
         results.append((True, f"Python {sys.version.split()[0]} is running the project."))
     else:
-        results.append((False, f"Python {running[0]}.{running[1]} is running the project, not 3.13. Pin the version with uv python pin 3.13, then run the check again: uv run sets up the project's .venv again for 3.13."))
+        results.append((False, f"Python {running} is running the project, not {PYTHON}. Pin the version with uv python pin {PYTHON}, then run the check again: uv run sets up the project's .venv again for {PYTHON}."))
 
     venv = folder / ".venv"
     if Path(sys.prefix).resolve() == venv.resolve():
@@ -95,9 +97,9 @@ def check_your_work():
     main = folder / "main.py"
     if not main.is_file():
         if (folder / "src").is_dir():
-            results.append((False, f"There's no main.py, but there's a src folder: the project was created without --no-package. Delete the {PROJECT} folder and create it again with uv init --no-package --python 3.13 {PROJECT}."))
+            results.append((False, f"There's no main.py, but there's a src folder: the project was created without --no-package. Delete the {PROJECT} folder and create it again with uv init --no-package --python {PYTHON} {PROJECT}."))
         else:
-            results.append((False, "There's no main.py in the project. uv init --no-package --python 3.13 creates it."))
+            results.append((False, f"There's no main.py in the project. uv init --no-package --python {PYTHON} creates it."))
     else:
         environment = dict(os.environ, PYTHONIOENCODING="utf-8")
         finished = subprocess.run([sys.executable, "main.py"], capture_output=True, text=True, encoding="utf-8", env=environment, timeout=120)

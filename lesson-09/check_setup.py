@@ -14,6 +14,8 @@ import sys
 import tomllib
 from pathlib import Path
 
+# The Python version the course pins. Change it here, in every check, in test_checks.py and in lesson-checks.yml.
+PYTHON = "3.13"
 PROJECT = "campaign-tools"
 SCRIPT = "parse_utm.py"
 USAGE = "Usage: uv run parse_utm.py URL"
@@ -101,16 +103,16 @@ def check_project(folder, results):
 
     pin = folder / ".python-version"
     pinned = pin.read_text(encoding="utf-8").strip() if pin.is_file() else None
-    running = (sys.version_info.major, sys.version_info.minor)
-    if pinned != "3.13":
-        message = f"The project should be pinned to Python 3.13, but .python-version says {pinned}." if pinned else "There's no .python-version file. Pin the project to Python 3.13."
-        if pinned and not str(project.get("requires-python", "")).startswith(">=3.13"):
-            message += f" The project was created for Python {pinned}, so its requires-python doesn't allow 3.13 either."
+    running = f"{sys.version_info.major}.{sys.version_info.minor}"
+    if pinned != PYTHON:
+        message = f"The project should be pinned to Python {PYTHON}, but .python-version says {pinned}." if pinned else f"There's no .python-version file. Pin the project to Python {PYTHON}."
+        if pinned and not str(project.get("requires-python", "")).startswith(f">={PYTHON}"):
+            message += f" The project was created for Python {pinned}, so its requires-python doesn't allow {PYTHON} either."
         results.append((False, message))
-    elif running != (3, 13):
-        results.append((False, f"The project is pinned to 3.13, but Python {running[0]}.{running[1]} is running it. Run the check with uv run from the {PROJECT} folder."))
+    elif running != PYTHON:
+        results.append((False, f"The project is pinned to {PYTHON}, but Python {running} is running it. Run the check with uv run from the {PROJECT} folder."))
     else:
-        results.append((True, f"The project is pinned to Python 3.13, and Python {sys.version.split()[0]} runs it."))
+        results.append((True, f"The project is pinned to Python {PYTHON}, and Python {sys.version.split()[0]} runs it."))
 
     venv = folder / ".venv"
     dependencies = [str(item).lower().replace("_", "-") for item in project.get("dependencies", [])]

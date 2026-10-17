@@ -11,6 +11,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+# The Python version the course pins. Change it here, in every check, in test_checks.py and in lesson-checks.yml.
+PYTHON = "3.13"
 
 def uv_version():
     """Return uv's version as a tuple of numbers, or None if this script wasn't started by uv."""
@@ -42,21 +44,21 @@ def check_your_work():
         results.append((True, f"uv {shown} is installed."))
 
     running = f"{sys.version_info.major}.{sys.version_info.minor}"
-    if (sys.version_info.major, sys.version_info.minor) == (3, 13):
+    if running == PYTHON:
         results.append((True, f"Python {sys.version.split()[0]} is running this check."))
     else:
-        results.append((False, f"Python {running} is running this check, not 3.13. Install it with uv python install 3.13, and keep --python 3.13 in the uv run command."))
+        results.append((False, f"Python {running} is running this check, not {PYTHON}. Install it with uv python install {PYTHON}, and keep --python {PYTHON} in the uv run command."))
 
     home = Path(sys.base_prefix)
-    if home.name.startswith("cpython-3.13"):
-        results.append((True, "This Python 3.13 was installed by uv."))
-    elif running == "3.13":
-        results.append((False, f"This Python 3.13 is at {home}, so it wasn't installed by uv. Run uv python install 3.13, then run this check again."))
+    if home.name.startswith(f"cpython-{PYTHON}"):
+        results.append((True, f"This Python {PYTHON} was installed by uv."))
+    elif running == PYTHON:
+        results.append((False, f"This Python {PYTHON} is at {home}, so it wasn't installed by uv. Run uv python install {PYTHON}, then run this check again."))
 
     for passed, message in results:
         print(("✅ " if passed else "❌ ") + message)
     if all(passed for passed, message in results):
-        print("\nEverything matches. Python 3.13 and uv are ready for the next topic.")
+        print(f"\nEverything matches. Python {PYTHON} and uv are ready for the next topic.")
     else:
         print("\nFix the first ❌, then run this check again.")
 
