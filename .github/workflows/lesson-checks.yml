@@ -36,7 +36,8 @@ jobs:
             "### The installer's output", "", "${fence}text", $installer.Trim(), $fence, "",
             "### uv --version in the same terminal, before it's reopened (PowerShell 7)", "", "${fence}text", $notFound.Trim(), $fence, "",
             "### The same in Windows PowerShell 5.1", "", "${fence}text", $notFound51.Trim(), $fence, ""
-          ) -join "`n" | Out-File -Append -Encoding utf8 $env:GITHUB_STEP_SUMMARY
+          ) -join "`n" | Tee-Object -Variable notes | Out-File -Append -Encoding utf8 $env:GITHUB_STEP_SUMMARY
+          Write-Output $notes
           "$env:USERPROFILE\.local\bin" | Out-File -Append -Encoding utf8 $env:GITHUB_PATH
           # uv --version failed on purpose above. Don't let its exit code fail the step.
           $global:LASTEXITCODE = 0
@@ -61,7 +62,7 @@ jobs:
             echo "uv on the PATH before installing: $before"; echo
             echo "### The installer's output"; echo; echo '```text'; echo "$installer"; echo '```'; echo
             echo "### uv --version in the same terminal, before it's reopened"; echo; echo '```text'; echo "$not_found"; echo '```'; echo
-          } >> "$GITHUB_STEP_SUMMARY"
+          } | tee -a "$GITHUB_STEP_SUMMARY"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Run Lesson 9's exercises and checks
