@@ -40,7 +40,7 @@ results = []
 observed = []
 
 VIDEO_CELLS = [
-    "import sys\n\nsys.executable",
+    "import sys\n\nprint(sys.executable)",
     'import csv\n\nCSV_PATH = "data/sessions_export_2024_03.csv"\n\nwith open(CSV_PATH, newline="", encoding="utf-8") as file:\n    rows = list(csv.DictReader(file))\nlen(rows)',
     'sessions_by_source_medium = {}\nfor row in rows:\n    key = (row["session_source"], row["session_medium"])\n    sessions_by_source_medium[key] = sessions_by_source_medium.get(key, 0) + int(row["sessions"])\nlen(sessions_by_source_medium)',
     'sessions_by_source_medium[("google", "cpc")]',
@@ -51,7 +51,7 @@ VIDEO_CELLS = [
 ]
 
 VIDEO_10_2_CELLS = [
-    "import sys\n\nsys.executable",
+    "import sys\n\nprint(sys.executable)",
     "%pip install tldextract",
     "import tldextract\n\n\ndef site_name(hostname):\n    return tldextract.extract(hostname).domain.lower()",
     'import csv\n\nwith open("data/sessions_export_2024_03.csv", newline="", encoding="utf-8") as file:\n    rows = list(csv.DictReader(file))\nreferral_hostnames = {row["session_source"] for row in rows if row["session_medium"] == "referral"}\nlen(referral_hostnames)',
@@ -128,7 +128,9 @@ def execute(folder, name, uvx=False, kernel=None, environment=None):
     command = (["uvx", "jupyter"] if uvx else ["uv", "run", "jupyter"]) + ["execute", "--allow-errors", name, f"--output={Path(name).stem}.out.ipynb"]
     if kernel:
         command.append(f"--kernel_name={kernel}")
-    code, log = run(command, folder, environment)
+    # On Windows, jupyter execute reads the notebook in the system's code page unless Python runs in UTF-8 mode.
+    # JupyterLab and VS Code always read notebooks as UTF-8, so this only affects the test.
+    code, log = run(command, folder, dict(environment or ENVIRONMENT, PYTHONUTF8="1"))
     executed = folder / f"{Path(name).stem}.out.ipynb"
     if not executed.exists():
         return f"jupyter execute didn't run the notebook (exit code {code}):\n{log}"
