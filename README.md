@@ -13,6 +13,7 @@ Open a workbook from its link in the course. In Colab, choose **File → Save a 
 | 11 | Fix a colleague's summer sale notebook | [Open in Colab](https://colab.research.google.com/github/team-simmer/python-foundations/blob/main/lesson-11/11.1-summer-sale.ipynb) |
 | 11 | Turn a colleague's notebook into a reusable report | [Open in Colab](https://colab.research.google.com/github/team-simmer/python-foundations/blob/main/lesson-11/11.2-campaign-report.ipynb) |
 | 11 | Rescue a broken report | [Open in Colab](https://colab.research.google.com/github/team-simmer/python-foundations/blob/main/lesson-11/11-black-friday-report.ipynb) |
+| 12 | Run the toolkit on 1,000 landing pages | [Open in Colab](https://colab.research.google.com/github/team-simmer/python-foundations/blob/main/lesson-12/12.4-landing-pages.ipynb) |
 
 ## Workbooks for your own computer
 
