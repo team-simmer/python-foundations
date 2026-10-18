@@ -11,9 +11,20 @@ Open a workbook from its link in the course. In Colab, choose **File → Save a 
 | 8 | Total social referrals by site | [Open in Colab](https://colab.research.google.com/github/team-simmer/python-foundations/blob/main/lesson-08/8.3-site-names.ipynb) |
 | 8 | Build a channel report notebook from scratch | [Open in Colab](https://colab.research.google.com/github/team-simmer/python-foundations/blob/main/lesson-08/8-channel-report.ipynb) |
 
+## Workbooks for your own computer
+
+Lesson 10's workbooks run in JupyterLab and VS Code, in a uv project on your computer. Download each one, with its data, by running [get_files.py](lesson-10/get_files.py) with uv in the project's folder, as the topic page shows. It never replaces a file that's already there.
+
+| Lesson | Workbook | Exercise name |
+|--------|----------|---------------|
+| 10 | Move your February notebook to your computer | `10.1` |
+| 10 | Connect a notebook to your project's kernel | `10.2` |
+| 10 | Compare two months of campaigns in VS Code | `10.3` |
+| 10 | Get a provided notebook running in both tools | `final` |
+
 ## Check scripts
 
-Lessons 9 and 10 happen on your own computer. Each exercise ends with a check that you run with uv from its URL, in the exercise's folder. The command is on the topic page. Read a script before you run it: the checks only read your project and run your script, and they don't change anything.
+Lesson 9 happens on your own computer. Each exercise ends with a check that you run with uv from its URL, in the exercise's folder. The command is on the topic page. Read a script before you run it: the checks only read your project and run your script, and they don't change anything.
 
 | Lesson | Exercise | Script |
 |--------|----------|--------|
@@ -22,6 +33,6 @@ Lessons 9 and 10 happen on your own computer. Each exercise ends with a check th
 | 9 | Move your referral report into a project | [check_project.py](lesson-09/check_project.py) |
 | 9 | Set up a project from a brief | [check_setup.py](lesson-09/check_setup.py) |
 
-`tests/` and the Lesson checks workflow test the checks on Windows and macOS on every change and every Monday.
+`tests/` and the Lesson checks workflow test the checks and the lesson 10 workbooks on Windows and macOS on every change and every Monday.
 
 The workbooks and checks are built from the course's source files. Please don't send pull requests here.

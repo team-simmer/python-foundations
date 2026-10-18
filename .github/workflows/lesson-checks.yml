@@ -1,6 +1,8 @@
 # Published as .github/workflows/lesson-checks.yml in team-simmer/python-foundations.
-# Installs uv the way students do, on Windows and macOS, and runs Lesson 9's exercises and checks end to end
-# with tests/lesson-09/test_checks.py. Each run's summary shows what the terminal printed, for the recording notes.
+# Installs uv the way students do, on Windows and macOS, and runs lesson 9.'s exercises and checks end to end
+# with tests/lesson-09/test_checks.py, and lesson 10.'s workbooks with tests/lesson-10/test_notebooks.py.
+# Each run's summary shows what the terminal and the notebooks printed, for the recording notes.
+# The source is in lesson 9.'s checks/ in the course repo.
 name: Lesson checks
 
 on:
@@ -8,10 +10,11 @@ on:
     branches: [main]
     paths:
       - "lesson-09/**"
+      - "lesson-10/**"
       - "tests/**"
       - ".github/workflows/lesson-checks.yml"
   schedule:
-    # Every Monday, to notice when a new uv, Python or tldextract changes what students see
+    # Every Monday, to notice when a new uv, Python, JupyterLab or tldextract changes what students see
     - cron: "0 6 * * 1"
   workflow_dispatch:
 
@@ -57,6 +60,12 @@ jobs:
         shell: pwsh
         run: uv run --python ${{ env.COURSE_PYTHON }} tests/lesson-09/test_checks.py "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/lesson-09"
 
+      - name: Run Lesson 10's notebooks
+        # Runs even if lesson 9.'s step failed, so one run reports both lessons
+        if: ${{ !cancelled() }}
+        shell: pwsh
+        run: uv run --python ${{ env.COURSE_PYTHON }} tests/lesson-10/test_notebooks.py "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/lesson-10"
+
   macos:
     runs-on: macos-latest
     steps:
@@ -84,3 +93,9 @@ jobs:
       - name: Run Lesson 9's exercises and checks
         shell: bash
         run: uv run --python ${{ env.COURSE_PYTHON }} tests/lesson-09/test_checks.py "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/lesson-09"
+
+      - name: Run Lesson 10's notebooks
+        # Runs even if lesson 9.'s step failed, so one run reports both lessons
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: uv run --python ${{ env.COURSE_PYTHON }} tests/lesson-10/test_notebooks.py "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/lesson-10"
